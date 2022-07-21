@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   decrement,
   increment,
@@ -8,65 +8,90 @@ import {
   incrementAsync,
   incrementIfOdd,
   selectCount,
-} from './userSlice';
-import styles from './UserForm.module.css';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+} from "./userSlice";
+import styles from "./UserForm.module.css";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
 interface UserFormData {
   username: string | undefined;
   phoneNumber: number | undefined;
   password: string | undefined;
-  passwordRepeat: string | undefined;
+  passwordConfirmation: string | undefined;
 }
 
 interface UserFormErrors {
   username?: string | undefined;
   phoneNumber?: string | undefined;
   password?: string | undefined;
-  passwordRepeat?: string | undefined;
+  passwordConfirmation?: string | undefined;
 }
 
 export function UserForm() {
   const count = useAppSelector(selectCount);
   const dispatch = useAppDispatch();
-  const [incrementAmount, setIncrementAmount] = useState('2');
+  const [incrementAmount, setIncrementAmount] = useState("2");
 
   const incrementValue = Number(incrementAmount) || 0;
 
   const validateForm = (formData: UserFormData) => {
     const errors: UserFormErrors = {};
-  
+
     if (!formData.username) {
-      errors.username = 'Required';
+      errors.username = "Required";
     } else if (
       // double check, for staying bullet proof when we change the input element's maxLength attribute value
       formData.username.length > 32
     ) {
       errors.username = "Up to 32 character allowed";
     }
-       if (!formData.phoneNumber) {
-   
-      errors.phoneNumber = 'Required';
+
+    if (!formData.phoneNumber) {
+      errors.phoneNumber = "Required";
     } else if (
-    // for a phone number, we accept the following formats:
-    // Israeli telphone number: 036357269
-    // Israeli cellphone number: 0548088929
-    // NOTE: we accepts an input without a leading 0, as well. For example: 548088929 
-     !(/^0?(([23489]{1}\d{7})|[5]{1}[012345689]\d{7})$/im.test(formData.phoneNumber.toString()))
+      // for phone numbers, we accept the following formats:
+      // Israeli telphone number: 036357269
+      // Israeli cellphone number: 0548088929
+      // NOTE: we accepts an input without a leading 0, as well. For example: 548088929
+      !/^0?(([23489]{1}\d{7})|[5]{1}[012345689]\d{7})$/im.test(
+        formData.phoneNumber.toString()
+      )
     ) {
-      errors.phoneNumber = "Please enter a valid Israeli phone number (05xxxxxxxx)"
+      errors.phoneNumber =
+        "Please enter a valid Israeli phone number (05xxxxxxxx)";
     }
+
+    if (!formData.password) {
+      errors.password = "Required";
+      // TODO: change the condition below
+    } else if (!formData.password.length) {
+      errors.password = "Please enter a valid password";
+    }
+
+    if (!formData.passwordConfirmation) {
+      errors.passwordConfirmation = "Required";
+      // TODO: change the condition below
+    } else if (formData.passwordConfirmation !== formData.password ) {
+      errors.passwordConfirmation = "Passwords don't match.";
+    }
+
+
+    
+
     return errors;
-  }
+  };
 
   return (
     <div>
-
       <div className={styles.row}>
         <div>
           <h1>Any place in your app!</h1>
           <Formik
-            initialValues={{ username: 'elkana' , phoneNumber: undefined, password: 'elkana', passwordRepeat: "" }}
+            initialValues={{
+              username: "elkana",
+              phoneNumber: undefined,
+              password: "elkana",
+              passwordConfirmation: "",
+            }}
             validate={validateForm}
             onSubmit={(values, { setSubmitting }) => {
               setTimeout(() => {
@@ -77,17 +102,47 @@ export function UserForm() {
           >
             {({ isSubmitting }) => (
               <Form>
-                <Field id="username" type="text" name="username" maxLength="32" />
-                 <label htmlFor="username">Username</label>
-          <Field id="firstName" name="firstName" placeholder="" />
+                <ul>
+                  <li className={styles.row}>
+                    <label htmlFor="username">Username</label>
+                    <Field
+                      id="username"
+                      type="text"
+                      name="username"
+                      maxLength="32"
+                    />
+                    <ErrorMessage name="username" component="div" />
+                  </li>
 
-                <ErrorMessage name="username" component="div" />
-                <Field type="number" name="phoneNumber" />
-                <ErrorMessage name="phoneNumber" component="div" />
-                <Field type="password" name="password" />
-                <ErrorMessage name="password" component="div" />
-                <Field type="password" name="passwordRepeat" />
-                <ErrorMessage name="passwordRepeat" component="div" />
+                  <li className={styles.row}>
+                    <label htmlFor="phoneNumber">Phone Number</label>
+                    <Field id="phoneNumber" name="phoneNumber" type="number" />
+                    <ErrorMessage name="phoneNumber" component="div" />
+                  </li>
+
+                  <li className={styles.row}>
+                    <label htmlFor="password">Password</label>
+                    <Field
+                      type="password"
+                      name="password"
+                      id="password"
+                      maxLength="24"
+                    />
+                    <ErrorMessage name="password" component="div" />
+                  </li>
+
+                  <li className={styles.row}>
+                    <label htmlFor="passwordConfirmation">Password</label>
+                    <Field
+                      type="password"
+                      name="passwordConfirmation"
+                      id="passwordConfirmation"
+                      maxLength="24"
+                    />
+                    <ErrorMessage name="passwordConfirmation" component="div" />
+                  </li>
+                </ul>
+
                 <button type="submit" disabled={isSubmitting}>
                   Submit
                 </button>
