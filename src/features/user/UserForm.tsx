@@ -40,9 +40,9 @@ export function UserForm() {
       errors.username = "Required";
     } else if (
       // double check, for staying bullet proof when we change the input element's maxLength attribute value
-      formData.username.length > 32
+      formData.username.length > 24
     ) {
-      errors.username = "Up to 32 character allowed";
+      errors.username = "Up to 24 character allowed";
     }
 
     if (!formData.phoneNumber) {
@@ -60,11 +60,20 @@ export function UserForm() {
         "Please enter a valid Israeli phone number (05xxxxxxxx)";
     }
 
+  
+
     if (!formData.password) {
       errors.password = "Required";
-      // TODO: change the condition below
-    } else if (!formData.password.length) {
-      errors.password = "Please enter a valid password";
+      // TODO: change the condition below to a regex
+      
+    } else {
+      const passwordRegex = new RegExp(/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,12})/, "im");
+      if (!passwordRegex.test(
+        
+        formData.password
+      )) {
+         errors.password = "Please enter 6-12 characters, including at least one uppercase letter and one special character)";
+      }
     }
 
     if (!formData.passwordConfirmation) {
@@ -73,9 +82,6 @@ export function UserForm() {
     } else if (formData.passwordConfirmation !== formData.password ) {
       errors.passwordConfirmation = "Passwords don't match.";
     }
-
-
-    
 
     return errors;
   };
@@ -109,7 +115,7 @@ export function UserForm() {
                       id="username"
                       type="text"
                       name="username"
-                      maxLength="32"
+                      maxLength="24"
                     />
                     <ErrorMessage name="username" component="div" />
                   </li>
@@ -126,7 +132,7 @@ export function UserForm() {
                       type="password"
                       name="password"
                       id="password"
-                      maxLength="24"
+                      maxLength="12"
                     />
                     <ErrorMessage name="password" component="div" />
                   </li>
@@ -137,7 +143,7 @@ export function UserForm() {
                       type="password"
                       name="passwordConfirmation"
                       id="passwordConfirmation"
-                      maxLength="24"
+                      maxLength="12"
                     />
                     <ErrorMessage name="passwordConfirmation" component="div" />
                   </li>
