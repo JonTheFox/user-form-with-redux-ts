@@ -1,16 +1,22 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   decrement,
-  increment,
+  // increment,
   incrementByAmount,
   incrementAsync,
   incrementIfOdd,
-  selectCount,
+  selectUsername,
+  selectPhoneNumber,
+  setUser
 } from "./userSlice";
 import styles from "./UserForm.module.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+
 
 interface UserFormData {
   username: string | undefined;
@@ -19,6 +25,8 @@ interface UserFormData {
   passwordConfirmation: string | undefined;
 }
 
+
+
 interface UserFormErrors {
   username?: string | undefined;
   phoneNumber?: string | undefined;
@@ -26,10 +34,18 @@ interface UserFormErrors {
   passwordConfirmation?: string | undefined;
 }
 
+interface TabPanelProps {
+  value: number;
+  index: number;
+  children:any;
+}
+
 export function UserForm() {
-  const count = useAppSelector(selectCount);
+  const username = useAppSelector(selectUsername);
+  const phoneNumber = useAppSelector(selectPhoneNumber);
   const dispatch = useAppDispatch();
   const [incrementAmount, setIncrementAmount] = useState("2");
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
   const incrementValue = Number(incrementAmount) || 0;
 
@@ -51,13 +67,13 @@ export function UserForm() {
       // for phone numbers, we accept the following formats:
       // Israeli telphone number: 036357269
       // Israeli cellphone number: 0548088929
-      // NOTE: we accepts an input without a leading 0, as well. For example: 548088929
+      // NOTE: we accept an input without a leading 0, as well. For example: 548088929
       !/^0?(([23489]{1}\d{7})|[5]{1}[012345689]\d{7})$/im.test(
-        formData.phoneNumber.toString()
+        formData.phoneNumber?.toString()
       )
     ) {
       errors.phoneNumber =
-        "Please enter a valid Israeli phone number (05xxxxxxxx)";
+        "Please enter a valid Israeli phone number";
     }
 
   
@@ -84,24 +100,65 @@ export function UserForm() {
     }
 
     return errors;
-  };
+  }; 
+
+  const handleTabChange = (ev: ChangeEvent<{}>, tabIndex: any) : void => {
+    setSelectedTabIndex(tabIndex);
+  }
+
+  function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={3}>
+          {children}
+          </Box>
+        )}
+      </div>
+    );
+}
 
   return (
     <div>
       <div className={styles.row}>
         <div>
-          <h1>Any place in your app!</h1>
-          <Formik
+          <h1>User Details</h1>
+
+           <Tabs
+          value={selectedTabIndex}
+          onChange={handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+          aria-label="user form and details tabs"
+        >
+          <Tab id="userFormTab" label="User" aria-controls="tab-panel--user-form" />
+          <Tab id="userDetailsTab" label="User" aria-controls="tab-panel--user-details" />
+     
+        </Tabs>
+
+          <TabPanel value={selectedTabIndex} index={0}>
+        <Formik
             initialValues={{
               username: "elkana",
-              phoneNumber: undefined,
-              password: "elkana",
-              passwordConfirmation: "",
+              phoneNumber: 548088924,
+              password: "qweQWE!",
+              passwordConfirmation: "qweQWE!",
             }}
             validate={validateForm}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={async (formData, { setSubmitting }) => {
+              const {username, password, phoneNumber} = formData;
+              await dispatch(setUser({username, password, phoneNumber}));
               setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
+                alert(JSON.stringify(formData, null, 2)); 
                 setSubmitting(false);
               }, 400);
             }}
@@ -155,6 +212,17 @@ export function UserForm() {
               </Form>
             )}
           </Formik>
+      </TabPanel>
+
+       <TabPanel value={selectedTabIndex} index={1}>
+
+        <div>
+          <h3>User Name: <span className="value-col">{username}</span></h3>
+          <h4>Phone number: <span className="value-col">{phoneNumber}</span></h4>
+        </div>
+       </TabPanel>
+          
+       
         </div>
       </div>
 
@@ -166,11 +234,11 @@ export function UserForm() {
         >
           -
         </button>
-        <span className={styles.value}>{count}</span>
+        <span className={styles.value}>count value would go here</span>
         <button
           className={styles.button}
           aria-label="Increment value"
-          onClick={() => dispatch(increment())}
+         
         >
           +
         </button>
