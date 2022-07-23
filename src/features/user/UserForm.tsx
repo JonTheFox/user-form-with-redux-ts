@@ -16,6 +16,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import { useForm } from "react-hook-form";
 
 
 interface UserFormData {
@@ -46,6 +48,10 @@ export function UserForm() {
   const dispatch = useAppDispatch();
   const [incrementAmount, setIncrementAmount] = useState("2");
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+   const { register, handleSubmit, watch, formState: { errors } } = useForm();
+   const onSubmit = data => console.log(data);
+
+    console.log(watch("example")); 
 
   const incrementValue = Number(incrementAmount) || 0;
 
@@ -75,8 +81,6 @@ export function UserForm() {
       errors.phoneNumber =
         "Please enter a valid Israeli phone number";
     }
-
-  
 
     if (!formData.password) {
       errors.password = "Required";
@@ -155,12 +159,19 @@ export function UserForm() {
             }}
             validate={validateForm}
             onSubmit={async (formData, { setSubmitting }) => {
+              try {
               const {username, password, phoneNumber} = formData;
+              setSubmitting(true);
               await dispatch(setUser({username, password, phoneNumber}));
-              setTimeout(() => {
-                alert(JSON.stringify(formData, null, 2)); 
+                
+              } catch (err) {
+                console.error(err);
+              } finally {
                 setSubmitting(false);
-              }, 400);
+              }
+         
+          
+             
             }}
           >
             {({ isSubmitting }) => (
@@ -170,10 +181,16 @@ export function UserForm() {
                     <label htmlFor="username">Username</label>
                     <Field
                       id="username"
+                      className="text-input"
                       type="text"
                       name="username"
                       maxLength="24"
                     />
+
+                     <TextField className="text-input" id="username" value={username} name="username" label="Outlined" variant="outlined" inputProps={{ maxLength: 24 }} />
+
+
+                    
                     <ErrorMessage name="username" component="div" />
                   </li>
 
