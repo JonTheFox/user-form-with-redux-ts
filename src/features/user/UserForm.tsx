@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
@@ -9,16 +9,15 @@ import {
   incrementIfOdd,
   selectUsername,
   selectPhoneNumber,
-  setUser
+  setUser,
 } from "./userSlice";
 import styles from "./UserForm.module.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import TextField from '@material-ui/core/TextField';
-import { useForm } from "react-hook-form";
-
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Box from "@material-ui/core/Box";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 interface UserFormData {
   username: string | undefined;
@@ -26,8 +25,6 @@ interface UserFormData {
   password: string | undefined;
   passwordConfirmation: string | undefined;
 }
-
-
 
 interface UserFormErrors {
   username?: string | undefined;
@@ -39,7 +36,7 @@ interface UserFormErrors {
 interface TabPanelProps {
   value: number;
   index: number;
-  children:any;
+  children: any;
 }
 
 export function UserForm() {
@@ -48,10 +45,6 @@ export function UserForm() {
   const dispatch = useAppDispatch();
   const [incrementAmount, setIncrementAmount] = useState("2");
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
-   const { register, handleSubmit, watch, formState: { errors } } = useForm();
-   const onSubmit = data => console.log(data);
-
-    console.log(watch("example")); 
 
   const incrementValue = Number(incrementAmount) || 0;
 
@@ -78,37 +71,34 @@ export function UserForm() {
         formData.phoneNumber?.toString()
       )
     ) {
-      errors.phoneNumber =
-        "Please enter a valid Israeli phone number";
+      errors.phoneNumber = "Please enter a valid Israeli phone number";
     }
 
     if (!formData.password) {
       errors.password = "Required";
-      // TODO: change the condition below to a regex
-      
     } else {
-      const passwordRegex = new RegExp(/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,12})/, "im");
-      if (!passwordRegex.test(
-        
-        formData.password
-      )) {
-         errors.password = "Please enter 6-12 characters, including at least one uppercase letter and one special character)";
+      const passwordRegex = new RegExp(
+        /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{6,12})/,
+        "im"
+      );
+      if (!passwordRegex.test(formData.password)) {
+        errors.password =
+          "Please enter 6-12 characters, including at least one uppercase letter and one special character)";
       }
     }
 
     if (!formData.passwordConfirmation) {
       errors.passwordConfirmation = "Required";
-      // TODO: change the condition below
-    } else if (formData.passwordConfirmation !== formData.password ) {
+    } else if (formData.passwordConfirmation !== formData.password) {
       errors.passwordConfirmation = "Passwords don't match.";
     }
 
     return errors;
-  }; 
+  };
 
-  const handleTabChange = (ev: ChangeEvent<{}>, tabIndex: any) : void => {
+  const handleTabChange = (ev: ChangeEvent<{}>, tabIndex: any): void => {
     setSelectedTabIndex(tabIndex);
-  }
+  };
 
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -121,14 +111,12 @@ export function UserForm() {
         aria-labelledby={`simple-tab-${index}`}
         {...other}
       >
-        {value === index && (
-          <Box p={3}>
-          {children}
-          </Box>
-        )}
+        {value === index && <Box p={3}>{children}</Box>}
       </div>
     );
-}
+  }
+
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -136,155 +124,151 @@ export function UserForm() {
         <div>
           <h1>User Details</h1>
 
-           <Tabs
-          value={selectedTabIndex}
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-          aria-label="user form and details tabs"
-        >
-          <Tab id="userFormTab" label="User" aria-controls="tab-panel--user-form" />
-          <Tab id="userDetailsTab" label="User" aria-controls="tab-panel--user-details" />
-     
-        </Tabs>
+          <Tabs
+            value={selectedTabIndex}
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            aria-label="user form and details tabs"
+          >
+            <Tab
+              id="userFormTab"
+              label="Form"
+              aria-controls="tab-panel--user-form"
+            />
+            <Tab
+              id="userDetailsTab"
+              label="User"
+              aria-controls="tab-panel--user-details"
+            />
+          </Tabs>
 
           <TabPanel value={selectedTabIndex} index={0}>
-        <Formik
-            initialValues={{
-              username: "elkana",
-              phoneNumber: 548088924,
-              password: "qweQWE!",
-              passwordConfirmation: "qweQWE!",
-            }}
-            validate={validateForm}
-            onSubmit={async (formData, { setSubmitting }) => {
-              try {
-              const {username, password, phoneNumber} = formData;
-              setSubmitting(true);
-              await dispatch(setUser({username, password, phoneNumber}));
-                
-              } catch (err) {
-                console.error(err);
-              } finally {
-                setSubmitting(false);
-              }
-         
-          
-             
-            }}
-          >
-            {({ isSubmitting }) => (
-              <Form>
-                <ul>
-                  <li className={styles.row}>
-                    <label htmlFor="username">Username</label>
-                    <Field
-                      id="username"
-                      className="text-input"
-                      type="text"
-                      name="username"
-                      maxLength="24"
-                    />
+            <Formik
+              initialValues={{
+                username,
+                phoneNumber,
+                password: "qweQWE!",
+                passwordConfirmation: "qweQWE!",
+              }}
+              validate={validateForm}
+              onSubmit={async (formData, { setSubmitting }) => {
+                try {
+                  const { username, password, phoneNumber } = formData;
+                  setSubmitting(true);
+                  dispatch(setUser({ username, password, phoneNumber }));
+                } catch (err) {
+                  console.error(err);
+                } finally {
+                  setSubmitting(false);
+                }
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+              }) => (
+                <form onSubmit={handleSubmit}>
+                  <ul>
+                    <li className={styles.row}>
+                      <TextField
+                        id="username"
+                        value={values.username}
+                        name="username"
+                        label="Username"
+                        variant="outlined"
+                        inputProps={{ maxLength: 24 }}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
 
-                     <TextField className="text-input" id="username" value={username} name="username" label="Outlined" variant="outlined" inputProps={{ maxLength: 24 }} />
+                      {errors.username && touched.username && errors.username}
+                    </li>
 
+                    <li className={styles.row}>
+                      <TextField
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        type="number"
+                        label="Phone Number"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{ maxLength: 10 }}
+                        variant="outlined"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
 
-                    
-                    <ErrorMessage name="username" component="div" />
-                  </li>
+                      <ErrorMessage name="phoneNumber" component="div" />
+                    </li>
 
-                  <li className={styles.row}>
-                    <label htmlFor="phoneNumber">Phone Number</label>
-                    <Field id="phoneNumber" name="phoneNumber" type="number" />
-                    <ErrorMessage name="phoneNumber" component="div" />
-                  </li>
+                    <li className={styles.row}>
+                      <TextField
+                        id="password"
+                        name="password"
+                        type="password"
+                        label="Password"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{ maxLength: 12 }}
+                        variant="outlined"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      <ErrorMessage name="password" component="div" />
+                    </li>
 
-                  <li className={styles.row}>
-                    <label htmlFor="password">Password</label>
-                    <Field
-                      type="password"
-                      name="password"
-                      id="password"
-                      maxLength="12"
-                    />
-                    <ErrorMessage name="password" component="div" />
-                  </li>
+                    <li className={styles.row}>
+                      <TextField
+                        id="passwordConfirmation"
+                        name="passwordConfirmation"
+                        type="password"
+                        label="Repeat Password"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{ maxLength: 12 }}
+                        variant="outlined"
+                      />
 
-                  <li className={styles.row}>
-                    <label htmlFor="passwordConfirmation">Password</label>
-                    <Field
-                      type="password"
-                      name="passwordConfirmation"
-                      id="passwordConfirmation"
-                      maxLength="12"
-                    />
-                    <ErrorMessage name="passwordConfirmation" component="div" />
-                  </li>
-                </ul>
+                      <ErrorMessage
+                        name="passwordConfirmation"
+                        component="div"
+                      />
+                    </li>
+                  </ul>
 
-                <button type="submit" disabled={isSubmitting}>
-                  Submit
-                </button>
-              </Form>
-            )}
-          </Formik>
-      </TabPanel>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    Submit
+                  </Button>
+                </form>
+              )}
+            </Formik>
+          </TabPanel>
 
-       <TabPanel value={selectedTabIndex} index={1}>
-
-        <div>
-          <h3>User Name: <span className="value-col">{username}</span></h3>
-          <h4>Phone number: <span className="value-col">{phoneNumber}</span></h4>
+          <TabPanel value={selectedTabIndex} index={1}>
+            <div>
+              <h3>
+                User Name: <span className="value-col">{username}</span>
+              </h3>
+              <h4>
+                Phone number: <span className="value-col">{phoneNumber}</span>
+              </h4>
+            </div>
+          </TabPanel>
         </div>
-       </TabPanel>
-          
-       
-        </div>
-      </div>
-
-      <div className={styles.row}>
-        <button
-          className={styles.button}
-          aria-label="Decrement value"
-          onClick={() => dispatch(decrement())}
-        >
-          -
-        </button>
-        <span className={styles.value}>count value would go here</span>
-        <button
-          className={styles.button}
-          aria-label="Increment value"
-         
-        >
-          +
-        </button>
-      </div>
-      <div className={styles.row}>
-        <input
-          className={styles.textbox}
-          aria-label="Set increment amount"
-          value={incrementAmount}
-          onChange={(e) => setIncrementAmount(e.target.value)}
-        />
-        <button
-          className={styles.button}
-          onClick={() => dispatch(incrementByAmount(incrementValue))}
-        >
-          Add Amount
-        </button>
-        <button
-          className={styles.asyncButton}
-          onClick={() => dispatch(incrementAsync(incrementValue))}
-        >
-          Add Async
-        </button>
-        <button
-          className={styles.button}
-          onClick={() => dispatch(incrementIfOdd(incrementValue))}
-        >
-          Add If Odd
-        </button>
       </div>
     </div>
   );
