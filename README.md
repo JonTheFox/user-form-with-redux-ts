@@ -14,4 +14,4 @@ Run the following commands:
 
 ## Linkedin
 
-Feel free to visit my Linkedin profile [Create React App documentation](https://www.linkedin.com/in/jonathan-weiss-45010295/).
+Feel free to visit my [Linkedin](https://www.linkedin.com/in/jonathan-weiss-45010295/) profile .
