@@ -32,6 +32,7 @@ interface UserFormErrors {
 interface TabPanelProps {
   value: number;
   index: number;
+  className: string;
   children: any;
 }
 
@@ -94,7 +95,7 @@ export function UserForm() {
   }, []);
 
   function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
+    const { children, value, index, className, ...other } = props;
 
     return (
       <div
@@ -106,7 +107,7 @@ export function UserForm() {
         {...other}
       >
         {value === index && (
-          <Box className={styles.formContainer} p={3}>
+          <Box className={styles[className]} p={3}>
             {children}
           </Box>
         )}
@@ -140,7 +141,7 @@ export function UserForm() {
           />
         </Tabs>
 
-        <TabPanel value={selectedTabIndex} index={0}>
+        <TabPanel value={selectedTabIndex} index={0} className="formPanel">
           <Formik
             initialValues={{
               username,
@@ -276,7 +277,11 @@ export function UserForm() {
           </Formik>
         </TabPanel>
 
-        <TabPanel value={selectedTabIndex} index={1}>
+        <TabPanel
+          value={selectedTabIndex}
+          index={1}
+          className="displayTabPanel"
+        >
           <div>
             <h3>
               User Name: <span>{username}</span>
