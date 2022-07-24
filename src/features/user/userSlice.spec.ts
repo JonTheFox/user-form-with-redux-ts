@@ -1,34 +1,33 @@
-import counterReducer, {
-  UserState,
-  // increment,
-  decrement,
-  incrementByAmount,
-} from "./userSlice";
+export {};
 
-// describe('counter reducer', () => {
-//   const initialState: CounterState = {
+// import counterReducer, {
+//   UserState,
+// } from "./userSlice";
+
+// describe('user reducer', () => {
+//   const initialState: userState = {
 //     value: 3,
 //     status: 'idle',
 //   };
 //   it('should handle initial state', () => {
-//     expect(counterReducer(undefined, { type: 'unknown' })).toEqual({
+//     expect(userReducer(undefined, { type: 'unknown' })).toEqual({
 //       value: 0,
 //       status: 'idle',
 //     });
 //   });
 
 //   it('should handle increment', () => {
-//     const actual = counterReducer(initialState, increment());
+//     const actual = userReducer(initialState, increment());
 //     expect(actual.value).toEqual(4);
 //   });
 
 //   it('should handle decrement', () => {
-//     const actual = counterReducer(initialState, decrement());
+//     const actual = userReducer(initialState, decrement());
 //     expect(actual.value).toEqual(2);
 //   });
 
 //   it('should handle incrementByAmount', () => {
-//     const actual = counterReducer(initialState, incrementByAmount(2));
+//     const actual = userReducer(initialState, incrementByAmount(2));
 //     expect(actual.value).toEqual(5);
 //   });
 // });

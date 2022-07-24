@@ -1,7 +1,12 @@
 import React, { useState, useCallback } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { selectUsername, selectPhoneNumber, setUser } from "./userSlice";
+import {
+  selectUsername,
+  selectPhoneNumber,
+  selectPassword,
+  setUser,
+} from "./userSlice";
 import styles from "./UserForm.module.css";
 import { Formik, ErrorMessage } from "formik";
 import Tabs from "@material-ui/core/Tabs";
@@ -33,6 +38,7 @@ interface TabPanelProps {
 export function UserForm() {
   const username = useAppSelector(selectUsername);
   const phoneNumber = useAppSelector(selectPhoneNumber);
+  const password = useAppSelector(selectPassword);
   const dispatch = useAppDispatch();
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
@@ -139,19 +145,22 @@ export function UserForm() {
             initialValues={{
               username,
               phoneNumber,
-              password: "qweQWE!",
-              passwordConfirmation: "qweQWE!",
+              password,
+              passwordConfirmation: password,
             }}
             validate={validateForm}
-            onSubmit={async (formData, { setSubmitting }) => {
+            onSubmit={async (formData) => {
               try {
                 const { username, password, phoneNumber } = formData;
-                setSubmitting(true);
+                console.log(
+                  "username, password, phoneNumber: ",
+                  username,
+                  password,
+                  phoneNumber
+                );
                 dispatch(setUser({ username, password, phoneNumber }));
               } catch (err) {
                 console.error(err);
-              } finally {
-                setSubmitting(false);
               }
             }}
           >
@@ -162,89 +171,108 @@ export function UserForm() {
               handleChange,
               handleBlur,
               handleSubmit,
-              isSubmitting,
-            }) => (
-              <form onSubmit={handleSubmit} className={styles.form}>
-                <ul>
-                  <li className={styles.row}>
-                    <TextField
-                      id="username"
-                      value={values.username}
-                      name="username"
-                      label="Username"
-                      variant="outlined"
-                      inputProps={{ maxLength: 24 }}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
+            }) => {
+              console.log("touched: ", touched);
+              console.log(
+                " !!Object.keys(errors).length: ",
+                !!Object.keys(errors).length
+              );
+              console.log(
+                "!Object.keys(touched).length: ",
+                !Object.keys(touched).length
+              );
+              return (
+                <form onSubmit={handleSubmit} className={styles.form}>
+                  <ul>
+                    <li className={styles.row}>
+                      <TextField
+                        id="username"
+                        value={values.username}
+                        name="username"
+                        label="Username"
+                        variant="outlined"
+                        inputProps={{ maxLength: 24 }}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
 
-                    {errors.username && touched.username && errors.username}
-                  </li>
+                      {errors.username && touched.username && errors.username}
+                    </li>
 
-                  <li className={styles.row}>
-                    <TextField
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      value={values.phoneNumber}
-                      type="number"
-                      label="Phone Number"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{ maxLength: 10 }}
-                      variant="outlined"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
+                    <li className={styles.row}>
+                      <TextField
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        value={values.phoneNumber}
+                        type="number"
+                        label="Phone Number"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{ maxLength: 10 }}
+                        variant="outlined"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
 
-                    <ErrorMessage name="phoneNumber" component="div" />
-                  </li>
+                      <ErrorMessage name="phoneNumber" component="div" />
+                    </li>
 
-                  <li className={styles.row}>
-                    <TextField
-                      id="password"
-                      name="password"
-                      type="password"
-                      label="Password"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{ maxLength: MAX_PASSWORD_LENGTH }}
-                      variant="outlined"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    <ErrorMessage name="password" component="div" />
-                  </li>
+                    <li className={styles.row}>
+                      <TextField
+                        id="password"
+                        name="password"
+                        type="password"
+                        label="Password"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{ maxLength: MAX_PASSWORD_LENGTH }}
+                        variant="outlined"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      <ErrorMessage name="password" component="div" />
+                    </li>
 
-                  <li className={styles.row}>
-                    <TextField
-                      id="passwordConfirmation"
-                      name="passwordConfirmation"
-                      type="password"
-                      label="Repeat Password"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{ maxLength: 12 }}
-                      variant="outlined"
-                    />
+                    <li className={styles.row}>
+                      <TextField
+                        id="passwordConfirmation"
+                        name="passwordConfirmation"
+                        type="password"
+                        label="Confirm Password"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{ maxLength: MAX_PASSWORD_LENGTH }}
+                        variant="outlined"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
 
-                    <ErrorMessage name="passwordConfirmation" component="div" />
-                  </li>
-                </ul>
+                      <ErrorMessage
+                        name="passwordConfirmation"
+                        component="div"
+                        className={styles.error}
+                      />
+                    </li>
+                  </ul>
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={styles.submitBtn}
-                >
-                  Submit
-                </Button>
-              </form>
-            )}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    disabled={
+                      !!Object.keys(errors).length ||
+                      !Object.keys(touched).length
+                    }
+                    className={styles.submitBtn}
+                  >
+                    Submit
+                  </Button>
+                </form>
+              );
+            }}
           </Formik>
         </TabPanel>
 

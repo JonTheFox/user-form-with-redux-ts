@@ -140,3 +140,7 @@
   opacity: 1;
   transition: 0s;
 }
+
+.error {
+  color: red;
+}
