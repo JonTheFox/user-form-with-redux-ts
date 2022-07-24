@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState, useCallback } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectUsername, selectPhoneNumber, setUser } from "./userSlice";
@@ -38,7 +38,7 @@ export function UserForm() {
 
   const MAX_PASSWORD_LENGTH = 12;
 
-  const validateForm = (formData: UserFormData) => {
+  const validateForm = useCallback((formData: UserFormData) => {
     const errors: UserFormErrors = {};
 
     if (!formData.username) {
@@ -85,9 +85,7 @@ export function UserForm() {
     }
 
     return errors;
-  };
-
-  const handleTabChange = (ev: ChangeEvent<{}>, tabIndex: any): void => {};
+  }, []);
 
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -253,10 +251,11 @@ export function UserForm() {
         <TabPanel value={selectedTabIndex} index={1}>
           <div>
             <h3>
-              User Name: <span className="value-col">{username}</span>
+              User Name: <span>{username}</span>
             </h3>
             <h4>
-              Phone number: <span className="value-col">{phoneNumber}</span>
+              Phone number:{" "}
+              <span className={styles.valueCol}>{phoneNumber}</span>
             </h4>
           </div>
         </TabPanel>

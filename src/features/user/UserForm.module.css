@@ -53,14 +53,18 @@
 .formContainer ul {
   margin: 0 0 0.5rem 0;
   text-align: left;
+  font-size: 0.65rem;
 }
 
 .formContainer ul {
   padding-left: 0;
   display: flex;
   flex-direction: column;
-
   align-items: flex-start;
+}
+
+.formContainer .valueCol {
+  font-size: 0.45rem;
 }
 
 .value {
