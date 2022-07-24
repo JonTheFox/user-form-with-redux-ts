@@ -8,6 +8,8 @@ Run the following commands:
 
 `npm i` <br/>
 
+# Running the app
+
 `npm run start` <br/>
 
 ## Linkedin
