@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectUsername, selectPhoneNumber, setUser } from "./userSlice";
