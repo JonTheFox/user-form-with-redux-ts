@@ -81,7 +81,7 @@ export function UserForm() {
       );
       if (!passwordRegex.test(formData.password)) {
         errors.password =
-          "Please enter 6-12 characters, including at least one uppercase letter and one special character)";
+          "Please enter 6-12 characters, including at least one uppercase letter and one special character.";
       }
     }
 
@@ -150,7 +150,7 @@ export function UserForm() {
               passwordConfirmation: password,
             }}
             validate={validateForm}
-            onSubmit={async (formData) => {
+            onSubmit={(formData) => {
               try {
                 const { username, password, phoneNumber } = formData;
                 console.log(
@@ -173,15 +173,6 @@ export function UserForm() {
               handleBlur,
               handleSubmit,
             }) => {
-              console.log("touched: ", touched);
-              console.log(
-                " !!Object.keys(errors).length: ",
-                !!Object.keys(errors).length
-              );
-              console.log(
-                "!Object.keys(touched).length: ",
-                !Object.keys(touched).length
-              );
               return (
                 <form onSubmit={handleSubmit} className={styles.form}>
                   <ul>

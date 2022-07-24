@@ -51,6 +51,7 @@
   border-top: 0.5px solid gray;
   border-bottom: 0.5px solid gray;
   width: var(--form-width);
+  padding-left: 0.5rem;
 }
 
 .formContainer {
