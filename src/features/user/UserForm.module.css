@@ -1,7 +1,10 @@
 .row {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  font-size: 0.5rem;
+  width: 100%;
 }
 
 .row > button {
@@ -13,12 +16,59 @@
   margin-bottom: 16px;
 }
 
+.row *.last-child {
+  margin-bottom: 16px;
+}
+
+.userTabPanel {
+  padding-left: 0.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabsContainer {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+.tabs {
+  margin-bottom: 1rem;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+}
+
+.formContainer {
+  height: 80vh;
+  min-height: 80vh;
+  max-height: 80vh;
+}
+
+.formContainer h2,
+.formContainer h3,
+.formContainer h4,
+.formContainer ul {
+  margin: 0 0 0.5rem 0;
+  text-align: left;
+}
+
+.formContainer ul {
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+}
+
 .value {
   font-size: 78px;
   padding-left: 16px;
   padding-right: 16px;
   margin-top: 2px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .button {
@@ -45,6 +95,10 @@
   margin-right: 4px;
 }
 
+.submitBtn {
+  width: 320px;
+}
+
 .button:hover,
 .button:focus {
   border: 2px solid rgba(112, 76, 182, 0.4);
@@ -60,7 +114,7 @@
 }
 
 .asyncButton:after {
-  content: '';
+  content: "";
   background-color: rgba(112, 76, 182, 0.15);
   display: block;
   position: absolute;
