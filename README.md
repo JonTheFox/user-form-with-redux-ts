@@ -6,7 +6,7 @@ Run the following commands:
 
 `cd user-form-with-redux-ts` <br/>
 
-`npm i` <br/>
+`npm i --force`<br/>
 
 # Running the app
 
