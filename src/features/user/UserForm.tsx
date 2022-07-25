@@ -153,12 +153,6 @@ export function UserForm() {
             onSubmit={(formData) => {
               try {
                 const { username, password, phoneNumber } = formData;
-                console.log(
-                  "username, password, phoneNumber: ",
-                  username,
-                  password,
-                  phoneNumber
-                );
                 dispatch(setUser({ username, password, phoneNumber }));
               } catch (err) {
                 console.error(err);
@@ -223,6 +217,7 @@ export function UserForm() {
                         variant="outlined"
                         onChange={handleChange}
                         onBlur={handleBlur}
+                        value={values.password}
                       />
                       <ErrorMessage name="password" component="div" />
                     </li>
@@ -240,6 +235,7 @@ export function UserForm() {
                         variant="outlined"
                         onChange={handleChange}
                         onBlur={handleBlur}
+                        value={values.passwordConfirmation}
                       />
 
                       <ErrorMessage
